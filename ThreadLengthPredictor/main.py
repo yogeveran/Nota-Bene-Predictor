@@ -41,7 +41,7 @@ is_multi = False
 if is_multi:
     dataset_file = 'dataset_all_threads_all_features_multi.csv'
 else:
-    dataset_file = 'dataset_all_threads_all_features.csv'
+    dataset_file = 'data/dataset_all_threads_all_features_no_sim.csv'
 thread_length_dataset = genfromtxt(dataset_file, delimiter=',', skip_header=1, dtype=float)
 with open(dataset_file,'r') as f:
     reader = csv.reader(f)
@@ -54,9 +54,10 @@ num_of_features = thread_length_dataset.shape[1]-2
 #train_test_cutoff = 15000          #only for small experiments to reduce run-time
 #test_validation_cutoff = 20000     #only for small experiments to reduce run-time
 
-train_test_cutoff = 137247
-test_validation_cutoff = 182997
+train_test_cutoff = int(dataset_size*0.5)
+test_validation_cutoff = int(dataset_size*0.75)
 
+# print "Train = [:{0}], Validation = [{0}:{1}], Test = [{1}:]".format(train_test_cutoff,test_validation_cutoff)
 
 
 #array[rows:columns]
@@ -71,19 +72,19 @@ test_features = thread_length_dataset[train_test_cutoff:test_validation_cutoff, 
 train_labels = thread_length_dataset[0:train_test_cutoff, -1]
 test_labels = thread_length_dataset[train_test_cutoff:test_validation_cutoff, -1]
 
-print "train_features.shape:"+str(train_features.shape)
-print "test_features.shape:"+str(test_features.shape)
-print "train_labels.shape:"+str(train_labels.shape)
-print "test_labels.shape:"+str(test_labels.shape)
-
-if is_multi:
-    print "Counting occurences."
-    print "Count train labels:"+ str(Counter(train_labels))
-    print "Count test labels:"+ str(Counter(test_labels))
-
-print "Build the model"
-
-''' Coose Classifier'''
+# print "train_features.shape:"+str(train_features.shape)
+# print "test_features.shape:"+str(test_features.shape)
+# print "train_labels.shape:"+str(train_labels.shape)
+# print "test_labels.shape:"+str(test_labels.shape)
+#
+# if is_multi:
+#     print "Counting occurences."
+#     print "Count train labels:"+ str(Counter(train_labels))
+#     print "Count test labels:"+ str(Counter(test_labels))
+#
+# print "Build the model"
+#
+# ''' Coose Classifier'''
 #clf = tree.DecisionTreeClassifier() ; clf_name = "DecisionTree Classifier"
 #clf = BaggingClassifier(n_estimators=15) ; clf_name = "Bagging Classifier"
 #clf = BaggingClassifier(tree.DecisionTreeClassifier(class_weight = 'auto')) ; clf_name = "Bagging Classifier - Weighted"
@@ -97,12 +98,12 @@ clf = AdaBoostClassifier() ; clf_name = "AdaBoost Classifier"
 
 
 ''' Fit Data'''
-clf = clf.fit(train_features, train_labels); clf_params = "None"
-#clf = clf.fit(train_features, train_labels, sample_weight=np.array([2.1 if i == 1 else 1 for i in train_labels])) ; clf_params = "sample_weight=np.array([2.1 if i == 1 else 1 for i in train_labels])"
+#clf = clf.fit(train_features, train_labels); clf_params = "None"
+clf = clf.fit(train_features, train_labels, sample_weight=np.array([2.1 if i == 1 else 1 for i in train_labels])) ; clf_params = "sample_weight=np.array([2.1 if i == 1 else 1 for i in train_labels])"
 
 
 
-print "Calculate the error"
+# print "Calculate the error"
 predictions = clf.predict(test_features)
 try:
     labels_predicted_prob = clf.predict_proba(test_features)
@@ -115,13 +116,13 @@ except:
 try:
     feature_importance = clf.feature_importances_
     sorted_idx = np.argsort(feature_importance)
-    print "Rank the features by their importance"
+    # print "Rank the features by their importance"
     importance = True
 except:
     importance = False
 
 if not is_multi:
-    print "Compute ROC curve and ROC area"
+    # print "Compute ROC curve and ROC area"
     y_score_ok = False
     try:# This is correct; http://scikit-learn.org/stable/auto_examples/plot_roc.html
         y_score = clf.decision_function(test_features)
