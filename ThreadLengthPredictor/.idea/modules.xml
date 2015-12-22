@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ThreadLengthPredictor.iml" filepath="$PROJECT_DIR$/.idea/ThreadLengthPredictor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../Predictions/length_csv/.idea/length_csv.iml" filepath="$PROJECT_DIR$/../../Predictions/length_csv/.idea/length_csv.iml" />
     </modules>
   </component>
 </project>

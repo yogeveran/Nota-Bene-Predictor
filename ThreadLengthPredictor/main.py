@@ -41,7 +41,7 @@ is_multi = False
 if is_multi:
     dataset_file = 'dataset_all_threads_all_features_multi.csv'
 else:
-    dataset_file = 'data_intervention/dataset_all_threads_all_features_no_sim.csv'
+    dataset_file = 'data_length/dataset_all_threads_all_features_sim_anot.csv'
 thread_length_dataset = genfromtxt(dataset_file, delimiter=',', skip_header=1, dtype=float)
 with open(dataset_file,'r') as f:
     reader = csv.reader(f)
@@ -50,6 +50,8 @@ with open(dataset_file,'r') as f:
 
 dataset_size = thread_length_dataset.shape[0]
 num_of_features = thread_length_dataset.shape[1]-2
+
+print thread_length_dataset.shape
 
 #train_test_cutoff = 15000          #only for small experiments to reduce run-time
 #test_validation_cutoff = 20000     #only for small experiments to reduce run-time
